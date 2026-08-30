@@ -72,6 +72,7 @@ small.note{color:#64748b}
       <button class="secondary" onclick="startMistakes()">❌ 前回間違えた問題</button>
       <button class="secondary" onclick="showHistory()">📊 学習履歴</button>
       <button class="secondary" onclick="showSearch()">🔎 問題検索</button>
+      <button class="danger" onclick="resetAllData()">🔄 学習データをリセット</button>
     </div>
     <div class="stats">
       <div class="stat">解答数<b id="totalAnswered">0</b></div>
@@ -301,6 +302,13 @@ function showHistory(){
   const s=stats(),list=document.getElementById("historyList");
   list.innerHTML=s.history.length?s.history.map((h,i)=>`<div class="review-item"><b>${i+1}. ${h.label}</b><br>${h.date}<br>${h.correct}/${h.total}問（正答率 ${h.rate}%）</div>`).join(""):"<p>まだ学習履歴がありません。</p>";
   show("history");hide("home");hide("quiz");hide("result");hide("mistakes");hide("search");
+}
+  function resetAllData(){
+  if(confirm("解答数・正解数・間違えた問題・学習履歴をすべてリセットしますか？")){
+    localStorage.removeItem("seihoStats");
+    loadStats();
+    alert("学習データをリセットしました。");
+  }
 }
 function clearHistory(){
   if(confirm("学習履歴を消去しますか？")){const s=stats();s.history=[];localStorage.setItem("seihoStats",JSON.stringify(s));showHistory()}
