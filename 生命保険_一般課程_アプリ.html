@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生命保険 一般課程 トレーニング</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:"Yu Gothic",Meiryo,sans-serif;background:#f4f7fb;color:#1f2937}
+header{background:#173b68;color:#fff;padding:18px 20px;text-align:center}
+header h1{margin:0;font-size:24px}
+header p{margin:6px 0 0;font-size:13px;opacity:.9}
+.container{max-width:1000px;margin:24px auto;padding:0 16px}
+.card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 5px 20px #00000012;margin-bottom:18px}
+button{border:0;border-radius:9px;padding:12px 18px;font-size:15px;cursor:pointer;background:#1769aa;color:#fff}
+button:hover{filter:brightness(.95)}
+button.secondary{background:#64748b}
+button.success{background:#16834a}
+button.danger{background:#c0392b}
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.menu button{padding:20px 12px;font-size:16px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.stat{background:#eef5ff;border-radius:10px;padding:15px;text-align:center}
+.stat b{display:block;font-size:26px;color:#173b68}
+.hidden{display:none}
+.progress{height:10px;background:#e5e7eb;border-radius:20px;overflow:hidden;margin:14px 0}
+.progress>div{height:100%;background:#1769aa;width:0}
+.question{font-size:20px;line-height:1.7;font-weight:bold;margin:18px 0}
+.choice{display:block;width:100%;text-align:left;background:#f8fafc;color:#1f2937;border:2px solid #dbe2ea;margin:10px 0;padding:14px;border-radius:10px}
+.choice:hover{background:#eef5ff}
+.choice.selected{border-color:#1769aa;background:#e8f2ff}
+.choice.correct{border-color:#16834a;background:#e8f8ef}
+.choice.wrong{border-color:#c0392b;background:#fdeceb}
+.explanation{background:#f1f5f9;padding:15px;border-radius:10px;line-height:1.7;margin-top:15px}
+.meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#64748b;font-size:14px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.result{text-align:center}
+.score{font-size:52px;font-weight:bold;color:#173b68}
+.review-item{border-left:5px solid #cbd5e1;padding:12px 15px;margin:12px 0;background:#f8fafc}
+.review-item.ok{border-color:#16834a}
+.review-item.ng{border-color:#c0392b}
+small.note{color:#64748b}
+@media(max-width:600px){.stats{grid-template-columns:1fr}.question{font-size:18px}}
+.exam-header{display:flex;justify-content:space-between;align-items:center;background:#173b68;color:#fff;padding:14px 16px;border-radius:10px;margin-bottom:15px}.exam-timer{font-size:24px;font-weight:bold}.exam-timer.warning{background:#c0392b;padding:6px 10px;border-radius:7px}.exam-nav{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;margin:15px 0}.exam-nav button{padding:8px 3px;font-size:13px;background:#e8eef5;color:#173b68}.exam-nav button.current{outline:3px solid #1769aa;background:#dbeafe}.exam-nav button.done{background:#cdebd8}.exam-nav button.mark{box-shadow:inset 0 -4px 0 #d6a900}.exam-check{display:flex;align-items:center;gap:8px;margin:12px 0}.exam-check input{width:18px;height:18px}.exam-actions{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:18px}.exam-actions .right{display:flex;gap:10px}@media(max-width:600px){.exam-nav{grid-template-columns:repeat(5,1fr)}}</style>
+</head>
+<body>
+<header>
+  <h1>生命保険 一般課程 トレーニング</h1>
+  <p>オリジナル練習問題版｜Windowsのブラウザで動作</p>
+</header>
+
+<div class="container">
+  <section id="home" class="card">
+    <h2>メニュー</h2>
+    <p>本アプリは、生命保険一般課程の学習用に作成した<strong>オリジナル問題</strong>を収録しています。</p>
+    <div class="menu">
+      <button onclick="startExam()">🏆 本番形式模擬試験<br><small>40分</small></button>
+      <button onclick="startQuiz('all',10)">🎲 ランダム10問</button>
+      <button onclick="startQuiz('生命保険の現状',5)">① 生命保険の現状</button>
+      <button onclick="startQuiz('生命保険の基礎知識',5)">② 生命保険の基礎知識</button>
+      <button onclick="startQuiz('生命保険契約時の実務',5)">③ 契約時の実務</button>
+      <button onclick="startQuiz('募集・コンプライアンス',5)">④ 募集・コンプライアンス</button>
+      <button onclick="startQuiz('生命保険契約後の実務',5)">⑤ 契約後の実務</button>
+      <button onclick="startQuiz('生命保険の周辺知識',5)">⑥ 周辺知識</button>
+      <button onclick="startQuiz('生命保険と税・相続',5)">⑦ 税・相続</button>
+      <button onclick="startQuiz('お客様ニーズへの対応',5)">⑧ お客様ニーズへの対応</button>
+      <button onclick="startQuiz('計算問題',5)">⑨ 計算問題</button>
+      <button class="secondary" onclick="startMistakes()">❌ 前回間違えた問題</button>
+      <button class="secondary" onclick="showHistory()">📊 学習履歴</button>
+      <button class="secondary" onclick="showSearch()">🔎 問題検索</button>
+    </div>
+    <div class="stats">
+      <div class="stat">解答数<b id="totalAnswered">0</b></div>
+      <div class="stat">正解数<b id="totalCorrect">0</b></div>
+      <div class="stat">正答率<b id="accuracy">0%</b></div>
+    </div>
+    <p><small class="note">※「過去問そのもの」ではなく、学習用に作成したオリジナル問題です。</small></p>
+  </section>
+
+  <section id="exam" class="card hidden">
+    <div class="exam-header"><div><b>生命保険 一般課程　模擬試験</b><br><small>全30問・本番形式</small></div><div class="exam-timer" id="examTimer">40:00</div></div>
+    <div class="exam-nav" id="examNav"></div>
+    <div class="meta"><span id="examCat"></span><span id="examNo"></span></div>
+    <div class="progress"><div id="examBar"></div></div>
+    <div id="examQuestion" class="question"></div><div id="examChoices"></div>
+    <label class="exam-check"><input type="checkbox" id="markReview" onchange="toggleReview()"> 後で見直す</label>
+    <div class="exam-actions"><button class="secondary" onclick="examPrev()">← 前の問題</button><div class="right"><button class="secondary" onclick="examNext()">次の問題 →</button><button class="danger" onclick="confirmFinishExam()">試験を終了</button></div></div>
+  </section>
+
+  <section id="quiz" class="card hidden">
+    <div class="meta"><span id="category"></span><span id="counter"></span><span id="timer"></span></div>
+    <div class="progress"><div id="bar"></div></div>
+    <div id="question" class="question"></div>
+    <div id="choices"></div>
+    <div id="explanation" class="explanation hidden"></div>
+    <div class="toolbar">
+      <button id="answerBtn" onclick="answer()">解答する</button>
+      <button id="nextBtn" class="success hidden" onclick="nextQuestion()">次の問題</button>
+      <button class="secondary" onclick="goHome()">ホームへ</button>
+    </div>
+  </section>
+
+  <section id="result" class="card hidden result">
+    <h2>結果</h2>
+    <div class="score" id="score"></div>
+    <p id="resultText"></p>
+    <div id="review"></div>
+    <div class="toolbar" style="justify-content:center">
+      <button onclick="goHome()">ホームへ</button>
+      <button onclick="startQuiz('all',10)">もう一度10問</button>
+    </div>
+  </section>
+
+  <section id="mistakes" class="card hidden">
+    <h2>間違えた問題</h2>
+    <div id="mistakeList"></div>
+    <button class="secondary" onclick="goHome()">ホームへ</button>
+  </section>
+
+  <section id="history" class="card hidden">
+    <h2>学習履歴</h2>
+    <div id="historyList"></div>
+    <button class="danger" onclick="clearHistory()">履歴を消去</button>
+    <button class="secondary" onclick="goHome()">ホームへ</button>
+  </section>
+
+  <section id="search" class="card hidden">
+    <h2>問題検索</h2>
+    <input id="searchBox" oninput="searchQuestions()" placeholder="キーワードを入力"
+      style="width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:9px;font-size:16px">
+    <div id="searchResults" style="margin-top:15px"></div>
+    <button class="secondary" onclick="goHome()">ホームへ</button>
+  </section>
+</div>
+
+<script>
+const questions = [
+{cat:"生命保険の現状",q:"生命保険制度の基本的な役割として最も適切なものはどれか。",c:["死亡や病気などの経済的リスクに備える","株式投資の損失を必ず補償する","すべての税金を免除する","物価上昇を必ず止める"],a:0,e:"生命保険は、死亡・病気・ケガなどによって生じる経済的負担に備える保障制度です。"},
+{cat:"生命保険の現状",q:"生命保険会社が契約者から受け取る保険料を原資として保障を提供する仕組みを支える考え方はどれか。",c:["リスクの集団化","個人だけで全額負担","利益の保証","為替固定"],a:0,e:"多数の契約者が保険料を拠出し、保険事故が発生した人に保険金等を支払うことでリスクを集団化します。"},
+{cat:"生命保険の現状",q:"少子高齢化が生命保険を取り巻く環境に与える影響として考えられるものはどれか。",c:["保障ニーズが変化する","保険需要が必ずゼロになる","すべての保険料が無料になる","死亡保障が不要になる"],a:0,e:"少子高齢化により、死亡保障だけでなく医療・介護・老後資金などのニーズも変化します。"},
+{cat:"生命保険の現状",q:"生命保険会社の社会的役割として適切なものはどれか。",c:["生活保障や資産形成などを支える","顧客の投資利益を必ず保証する","国の税制を決定する","銀行預金をすべて代替する"],a:0,e:"生命保険は、万一への保障に加えて、商品によっては老後資金準備などにも役立ちます。"},
+{cat:"生命保険の現状",q:"生命保険における相互扶助の考え方として適切なものはどれか。",c:["多くの人が保険料を負担し、必要な人に保険金等を支払う","一人の契約者が全員の保険金を負担する","保険会社が損失を一切負わない","契約者同士が直接お金を貸し借りする"],a:0,e:"生命保険は、多数の契約者が保険料を拠出して保障を支える相互扶助の仕組みを基本としています。"},
+
+{cat:"生命保険の基礎知識",q:"保険契約者とは誰か。",c:["保険会社","保険契約を締結し、契約上の権利・義務を持つ人","保障の対象となる人だけ","保険金を受け取る人だけ"],a:1,e:"保険契約者は保険会社と契約を結び、契約上の権利・義務を持つ人です。"},
+{cat:"生命保険の基礎知識",q:"被保険者とは誰か。",c:["保険会社","保険料だけを払う人","生命保険の保障の対象となる人","募集人"],a:2,e:"被保険者は、生命保険契約において生命・身体が保障の対象となる人です。"},
+{cat:"生命保険の基礎知識",q:"保険金受取人とは何か。",c:["保険金等を受け取る人","保険会社の社員","保険料を計算する人","健康診断を行う人"],a:0,e:"保険事故が発生した際に、契約に基づいて保険金等を受け取る人です。"},
+{cat:"生命保険の基礎知識",q:"定期保険の一般的な特徴はどれか。",c:["一定期間の死亡保障を中心とする","必ず一生涯保障される","必ず満期保険金がある","医療保障だけを行う"],a:0,e:"定期保険は一定期間の死亡保障を中心とする保険です。"},
+{cat:"生命保険の基礎知識",q:"終身保険の一般的な特徴はどれか。",c:["保障期間が一定期間のみ","原則として一生涯の死亡保障を持つ","死亡保障がない","保険料が毎日変わる"],a:1,e:"終身保険は原則として一生涯の死亡保障を持つことが特徴です。"},
+
+{cat:"生命保険契約時の実務",q:"生命保険の申込みと契約成立について正しいものはどれか。",c:["申込みをした瞬間に必ず成立する","所定の手続きと保険会社の承諾などを経て成立する","募集人の判断だけで成立する","保険料を払わなくても必ず成立する"],a:1,e:"申込みと契約成立は同一ではなく、保険会社の承諾など所定の手続きがあります。"},
+{cat:"生命保険契約時の実務",q:"告知の主な目的はどれか。",c:["保険会社が契約の引受判断を行うため","広告を作るため","募集人の成績を決めるため","保険料を必ず無料にするため"],a:0,e:"告知は、健康状態などの重要事項を保険会社に伝え、適切な引受判断に役立てる制度です。"},
+{cat:"生命保険契約時の実務",q:"告知を行う際の基本的な姿勢として適切なものはどれか。",c:["不利な内容は隠す","事実を正確に告知する","募集人が都合よく書き換える","質問されても回答しない"],a:1,e:"告知は契約上重要な手続きであり、事実を正確に告知することが基本です。"},
+{cat:"生命保険契約時の実務",q:"契約時に確認すべき事項として適切なものはどれか。",c:["保障内容・保険期間・保険料など","募集人の趣味だけ","会社の昼食メニュー","広告のデザインだけ"],a:0,e:"契約時には保障内容、保険期間、保険料、各種条件など重要事項を確認します。"},
+{cat:"生命保険契約時の実務",q:"クーリング・オフ制度の一般的な説明として適切なものはどれか。",c:["一定の条件・期間内に申込みの撤回等ができる制度","保険金を増やす制度","保険料を永久に無料にする制度","健康状態を変更する制度"],a:0,e:"クーリング・オフは、法令・約款等に定められた一定の条件・期間のもとで申込みの撤回等ができる制度です。"},
+
+{cat:"募集・コンプライアンス",q:"保険募集において最も重要な基本姿勢の一つはどれか。",c:["顧客の意向を把握し適切に提案する","高額な商品だけを勧める","不利益事項を説明しない","契約を急がせる"],a:0,e:"顧客の意向・ニーズを把握し、適切な情報提供と提案を行うことが重要です。"},
+{cat:"募集・コンプライアンス",q:"意向確認の目的として適切なものはどれか。",c:["顧客の意向と提案内容が合っているか確認する","営業成績を公開する","保険料を自動的に下げる","保険会社の株価を決める"],a:0,e:"意向確認は、顧客の意向・ニーズと提案内容が適合しているかを確認するために行います。"},
+{cat:"募集・コンプライアンス",q:"契約概要の主な目的はどれか。",c:["商品の重要事項を理解してもらう","募集人の個人情報を公開する","税金をなくす","保険金を増額する"],a:0,e:"契約概要は商品の仕組みや保障内容など、契約判断に重要な事項を説明するための資料です。"},
+{cat:"募集・コンプライアンス",q:"注意喚起情報の役割として適切なものはどれか。",c:["契約に際して特に注意すべき事項を確認する","広告を派手にする","保険料を無料にする","募集人の給与を決める"],a:0,e:"注意喚起情報は、契約に際して特に注意すべき事項や不利益となり得る事項などを確認するための情報です。"},
+{cat:"募集・コンプライアンス",q:"顧客の個人情報の取扱いとして不適切なものはどれか。",c:["利用目的に沿って管理する","必要な安全管理措置を講じる","本人の同意なく何でも第三者へ自由に提供する","法令や社内ルールに従う"],a:2,e:"個人情報を必要以上に第三者へ自由に提供することは適切ではありません。"},
+
+{cat:"生命保険契約後の実務",q:"契約後に住所が変わった場合、一般に必要となる手続きはどれか。",c:["住所変更の手続き","契約を必ず解約する","保険料を全額返金する","何もしなくてよい"],a:0,e:"住所など契約者情報に変更があった場合は、保険会社への変更手続きが必要です。"},
+{cat:"生命保険契約後の実務",q:"保険金・給付金を請求する際に重要なことはどれか。",c:["契約内容や支払事由を確認する","請求書類を捨てる","事実と違う内容を申告する","募集人だけで支払いを決定する"],a:0,e:"保険金・給付金の請求では、契約内容や支払事由を確認し、必要書類を提出することが重要です。"},
+{cat:"生命保険契約後の実務",q:"保険料の払込みが困難になった場合に検討できることはどれか。",c:["契約内容に応じた各種制度を確認する","必ず放置する","保険会社に連絡してはいけない","必ず全財産を処分する"],a:0,e:"商品によって払済保険や延長保険などの制度がある場合があります。契約内容を確認することが重要です。"},
+{cat:"生命保険契約後の実務",q:"契約内容の見直しを検討するきっかけとして適切なものはどれか。",c:["結婚・出産・退職などのライフイベント","毎日の天気だけ","好きな色の変更だけ","テレビ番組の変更だけ"],a:0,e:"ライフイベントによって必要保障額が変わることがあるため、契約内容の見直しを検討します。"},
+{cat:"生命保険契約後の実務",q:"保険契約を解約するときに注意すべきことはどれか。",c:["保障がなくなることや返戻金等の取扱いを確認する","必ず元本以上になる","保障は永久に残る","税務上の影響は絶対にない"],a:0,e:"解約すると保障がなくなるほか、解約返戻金などの取扱いにも注意が必要です。"},
+
+{cat:"生命保険の周辺知識",q:"公的保障を確認することが民間生命保険の設計に役立つ理由はどれか。",c:["必要保障額を考える材料になる","民間保険が必ず不要になる","保険料が必ず半額になる","税金がなくなる"],a:0,e:"公的保障を把握することで、民間保険で補う必要がある部分を考えやすくなります。"},
+{cat:"生命保険の周辺知識",q:"医療保険の一般的な保障対象はどれか。",c:["病気やケガによる入院・手術等","株価下落だけ","住宅価格下落だけ","旅行日程変更だけ"],a:0,e:"医療保険は商品ごとの条件に応じて、入院・手術などに対して給付を行います。"},
+{cat:"生命保険の周辺知識",q:"個人年金保険の一般的な目的はどれか。",c:["老後など将来の資金準備","自動車事故だけの補償","火災だけの補償","為替相場の固定"],a:0,e:"個人年金保険は老後など将来の生活資金を準備する目的で利用されます。"},
+{cat:"生命保険の周辺知識",q:"介護保障を考える際に重要な視点はどれか。",c:["介護に必要となる費用や期間などを考える","介護費用は必ずゼロになる","公的制度は一切関係ない","誰でも同じ費用になる"],a:0,e:"介護保障では、公的制度や家族状況、必要な費用・期間などを総合的に考えます。"},
+{cat:"生命保険の周辺知識",q:"資産形成を考える際の基本的な考え方として適切なものはどれか。",c:["目的・期間・リスク許容度などを考慮する","必ず一つの商品だけに集中する","元本割れは絶対にないと考える","目的を考えずに決める"],a:0,e:"資産形成では、目的、運用期間、必要資金、リスク許容度などを踏まえて検討します。"},
+
+{cat:"生命保険と税・相続",q:"生命保険料控除について一般に正しいものはどれか。",c:["一定の要件・限度額のもと所得控除の対象となる場合がある","すべての保険料が無条件で全額控除される","必ず税額がゼロになる","法人だけが利用できる"],a:0,e:"生命保険料控除は、一定の要件と限度額のもとで所得控除を受けられる制度です。"},
+{cat:"生命保険と税・相続",q:"死亡保険金の課税関係は、契約者・被保険者・受取人の関係によって変わるか。",c:["変わる","変わらない","必ず非課税","必ず消費税"],a:0,e:"死亡保険金の課税関係は、契約形態や契約者・被保険者・受取人の関係などにより異なります。"},
+{cat:"生命保険と税・相続",q:"相続税の基礎控除について適切なものはどれか。",c:["一定の基礎控除額が設けられている","すべての相続に必ず課税される","基礎控除は存在しない","生命保険と一切関係がない"],a:0,e:"相続税には基礎控除があり、課税遺産総額を考えるうえで重要です。"},
+{cat:"生命保険と税・相続",q:"生命保険金の受取人指定の意味として適切なものはどれか。",c:["保険金を受け取る人を契約上定める","保険料を無料にする","保障期間を必ず延長する","健康診断を省略する"],a:0,e:"受取人指定は、保険事故発生時に保険金を受け取る人を契約上定めるものです。"},
+{cat:"生命保険と税・相続",q:"法人契約の生命保険について、税務上の取扱いは商品や契約内容等で異なるか。",c:["異なる場合がある","必ず同じ","必ず個人契約と同じ","税務上の取扱いはない"],a:0,e:"法人契約では、保険種類や契約形態、保険料の性質などにより税務上の取扱いが異なる場合があります。"},
+
+{cat:"お客様ニーズへの対応",q:"必要保障額を考える際に確認すべきものとして適切なものはどれか。",c:["家族構成・収入・支出・公的保障など","募集人の好みだけ","広告の色","会社のロゴ"],a:0,e:"必要保障額は家族構成、収入・支出、将来の必要資金、公的保障などを踏まえて考えます。"},
+{cat:"お客様ニーズへの対応",q:"顧客の意向を把握するうえで適切な方法はどれか。",c:["家族構成や目的、希望する保障などを確認する","最初から商品を一つに決める","質問をしない","収入だけで判断する"],a:0,e:"顧客の目的、家族構成、保障ニーズ、予算などを確認して意向を把握します。"},
+{cat:"お客様ニーズへの対応",q:"保障設計で重要なことはどれか。",c:["現在だけでなく将来のライフイベントも考える","現在の年齢だけで決める","保険料が高いほど必ず適切と考える","すべての人に同じ保障を勧める"],a:0,e:"結婚、出産、住宅購入、退職など将来のライフイベントも考慮して保障を設計します。"},
+{cat:"お客様ニーズへの対応",q:"顧客に複数の商品を提案する際に適切な姿勢はどれか。",c:["特徴・メリットだけでなく注意点も説明する","不利益な事項を隠す","比較をさせない","最も高額な商品だけを勧める"],a:0,e:"顧客が適切に判断できるよう、商品の特徴だけでなく重要な注意点も説明することが大切です。"},
+{cat:"お客様ニーズへの対応",q:"顧客から分からない専門的な質問を受けた場合の対応として適切なものはどれか。",c:["確認して正確な情報を伝える","推測で断定する","質問を無視する","事実と違う回答をする"],a:0,e:"不明な点を推測で断定せず、必要に応じて確認したうえで正確な情報を伝えることが重要です。"},
+
+{cat:"計算問題",q:"月払保険料が8,000円の場合、1年間の払込保険料はいくらか。",c:["80,000円","88,000円","96,000円","104,000円"],a:2,e:"8,000円×12か月＝96,000円です。"},
+{cat:"計算問題",q:"年間保険料が120,000円で、月払に均等換算すると月額はいくらか。",c:["8,000円","10,000円","12,000円","15,000円"],a:1,e:"120,000円÷12か月＝10,000円です。"},
+{cat:"計算問題",q:"死亡保障3,000万円のうち、すでに準備できている保障が1,200万円の場合、不足する保障額はいくらか。",c:["1,200万円","1,500万円","1,800万円","2,000万円"],a:2,e:"3,000万円−1,200万円＝1,800万円です。"},
+{cat:"計算問題",q:"毎月2万円を5年間積み立てた場合、単純計算で積立総額はいくらか。",c:["100万円","120万円","140万円","160万円"],a:1,e:"20,000円×12か月×5年＝1,200,000円、つまり120万円です。"},
+{cat:"計算問題",q:"年間保険料が24万円で、保障期間が10年間の場合、単純に保険料総額を計算するといくらか。",c:["120万円","180万円","240万円","300万円"],a:2,e:"24万円×10年＝240万円です。実際の商品では払込方法や更新等の条件を確認する必要があります。"}
+];
+
+let quiz=[], idx=0, selected=-1, answered=false, results=[], timer=null, remaining=2400, examMode=false;
+
+function stats(){
+  return JSON.parse(localStorage.getItem("seihoStats")||'{"answered":0,"correct":0,"mistakes":[],"history":[]}');
+}
+function loadStats(){
+  const s=stats();
+  document.getElementById("totalAnswered").textContent=s.answered;
+  document.getElementById("totalCorrect").textContent=s.correct;
+  document.getElementById("accuracy").textContent=s.answered?Math.round(s.correct/s.answered*100)+"%":"0%";
+}
+function saveAnswer(q,ok){
+  const s=stats(); s.answered++; if(ok)s.correct++;
+  if(!ok && !s.mistakes.includes(q.q))s.mistakes.push(q.q);
+  localStorage.setItem("seihoStats",JSON.stringify(s)); loadStats();
+}
+function saveHistory(label,correct,total,seconds){
+  const s=stats(); s.history.unshift({date:new Date().toLocaleString("ja-JP"),label,correct,total,rate:Math.round(correct/total*100),time:seconds});
+  s.history=s.history.slice(0,30); localStorage.setItem("seihoStats",JSON.stringify(s));
+}
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function startExam(){
+  examMode=true;quiz=shuffle(questions).slice(0,Math.min(30,questions.length));idx=0;
+  results=quiz.map(q=>({q:q,selected:-1,ok:false,answered:false,mark:false}));remaining=2400;
+  show("exam");hide("home");hide("quiz");hide("result");hide("mistakes");hide("history");hide("search");renderExam();startExamTimer();
+}
+function startExamTimer(){stopTimer();updateExamTimer();timer=setInterval(function(){remaining--;updateExamTimer();if(remaining<=0){finishFormalExam(true)}},1000)}
+function updateExamTimer(){var m=Math.floor(remaining/60),s=remaining%60,e=document.getElementById("examTimer");e.textContent=String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");e.classList.toggle("warning",remaining<=300)}
+function renderExam(){
+  var r=results[idx],q=r.q;document.getElementById("examCat").textContent="分野："+q.cat;document.getElementById("examNo").textContent="第"+(idx+1)+"問";
+  document.getElementById("examBar").style.width=((idx+1)/quiz.length*100)+"%";document.getElementById("examQuestion").textContent=q.q;
+  document.getElementById("examChoices").innerHTML=q.c.map(function(x,i){return '<button class="choice '+(r.selected===i?"selected":"")+'" onclick="examSelect('+i+')">'+String.fromCharCode(65+i)+'．'+x+'</button>'}).join("");
+  document.getElementById("markReview").checked=r.mark;renderExamNav();updateExamTimer();
+}
+function renderExamNav(){document.getElementById("examNav").innerHTML=results.map(function(r,i){return '<button class="'+(i===idx?"current ":"")+(r.answered?"done ":"")+(r.mark?"mark":"")+'" onclick="examJump('+i+')">'+(i+1)+'</button>'}).join("")}
+function examSelect(i){results[idx].selected=i;results[idx].answered=true;renderExam()}
+function toggleReview(){results[idx].mark=document.getElementById("markReview").checked;renderExamNav()}
+function examPrev(){if(idx>0){idx--;renderExam()}}
+function examNext(){if(idx<quiz.length-1){idx++;renderExam()}else{confirmFinishExam()}}
+function examJump(i){idx=i;renderExam()}
+function confirmFinishExam(){var u=results.filter(function(r){return !r.answered}).length;var msg=u?"未回答が"+u+"問あります。\n試験を終了しますか？":"試験を終了して採点しますか？";if(confirm(msg))finishFormalExam(false)}
+function startQuiz(cat,n){
+  examMode=false; stopTimer();
+  let pool=cat==="all"?questions:questions.filter(x=>x.cat===cat);
+  quiz=shuffle(pool).slice(0,Math.min(n,pool.length)); idx=0; results=[];
+  show("quiz"); hide("home"); hide("result"); hide("mistakes"); hide("history"); hide("search"); render();
+}
+function startMistakes(){
+  const s=stats();
+  const pool=questions.filter(q=>s.mistakes.includes(q.q));
+  if(!pool.length){alert("前回間違えた問題はありません。");return}
+  examMode=false; quiz=shuffle(pool); idx=0; results=[];
+  show("quiz");hide("home");hide("result");hide("mistakes");hide("history");hide("search");render();
+}
+function startTimer(){
+  stopTimer(); updateTimer();
+  timer=setInterval(()=>{remaining--;updateTimer();if(remaining<=0){stopTimer();finishExam();}},1000);
+}
+function stopTimer(){if(timer){clearInterval(timer);timer=null}}
+function updateTimer(){
+  const m=Math.floor(remaining/60),s=remaining%60;
+  document.getElementById("timer").textContent=examMode?`⏱ ${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`:"";
+}
+function render(){
+  const q=quiz[idx]; selected=-1; answered=false;
+  document.getElementById("category").textContent="分野："+q.cat;
+  document.getElementById("counter").textContent=(idx+1)+" / "+quiz.length;
+  document.getElementById("bar").style.width=(idx/quiz.length*100)+"%";
+  document.getElementById("question").textContent=q.q;
+  document.getElementById("choices").innerHTML=q.c.map((x,i)=>`<button class="choice" onclick="selectChoice(${i})">${String.fromCharCode(65+i)}．${x}</button>`).join("");
+  document.getElementById("explanation").classList.add("hidden");
+  document.getElementById("answerBtn").classList.remove("hidden");
+  document.getElementById("nextBtn").classList.add("hidden");
+  updateTimer();
+}
+function selectChoice(i){
+  if(answered)return; selected=i;
+  [...document.querySelectorAll(".choice")].forEach((b,j)=>b.classList.toggle("selected",j===i));
+}
+function answer(){
+  if(selected<0){alert("答えを選択してください。");return}
+  const q=quiz[idx],ok=selected===q.a; answered=true;
+  results.push({q,selected,ok}); saveAnswer(q,ok);
+  [...document.querySelectorAll(".choice")].forEach((b,j)=>{b.disabled=true;if(j===q.a)b.classList.add("correct");if(j===selected&&!ok)b.classList.add("wrong")});
+  const ex=document.getElementById("explanation");
+  ex.innerHTML=(ok?"<strong>⭕ 正解！</strong><br>":"<strong>❌ 不正解</strong><br>")+"正解："+String.fromCharCode(65+q.a)+"．"+q.c[q.a]+"<br><br>"+q.e;
+  ex.classList.remove("hidden"); document.getElementById("answerBtn").classList.add("hidden"); document.getElementById("nextBtn").classList.remove("hidden");
+}
+function nextQuestion(){idx++;if(idx<quiz.length)render();else finishExam()}
+function finishFormalExam(timeUp){
+  stopTimer();results.forEach(function(r){r.ok=r.selected===r.q.a});hide("exam");show("result");
+  var answered=results.filter(function(r){return r.answered}).length,correct=results.filter(function(r){return r.ok}).length,rate=Math.round(correct/quiz.length*100);
+  document.getElementById("score").textContent=correct+" / "+quiz.length;
+  document.getElementById("resultText").innerHTML="<strong style='font-size:22px'>"+(rate>=70?"🎉 合格ライン到達":"📘 復習しましょう")+"</strong><br>正答率 "+rate+"%　｜　回答 "+answered+"/"+quiz.length+"問　｜　"+(timeUp?"⏰ 時間切れ":"40分制限");
+  results.forEach(function(r){if(r.answered)saveAnswer(r.q,r.ok)});saveHistory("本番形式模擬試験",correct,quiz.length,2400-remaining);
+  document.getElementById("review").innerHTML=results.map(function(r,i){return "<div class='review-item "+(r.ok?"ok":"ng")+"'><b>"+(i+1)+". "+(r.ok?"⭕":"❌")+" "+r.q.q+"</b><br>"+(r.answered?"あなたの回答："+String.fromCharCode(65+r.selected)+"．"+r.q.c[r.selected]:"あなたの回答：未回答")+"<br>正解："+String.fromCharCode(65+r.q.a)+"．"+r.q.c[r.q.a]+"<br><small>"+r.q.e+"</small></div>"}).join("");loadStats();
+}
+function finishExam(){finishFormalExam(false)}
+function showMistakes(){
+  const s=stats(),list=document.getElementById("mistakeList");
+  list.innerHTML=s.mistakes.length?s.mistakes.map((m,i)=>`<div class="review-item ng">${i+1}. ${m}</div>`).join(""):"<p>まだ間違えた問題はありません。</p>";
+  show("mistakes");hide("home");hide("quiz");hide("result");hide("history");hide("search");
+}
+function showHistory(){
+  const s=stats(),list=document.getElementById("historyList");
+  list.innerHTML=s.history.length?s.history.map((h,i)=>`<div class="review-item"><b>${i+1}. ${h.label}</b><br>${h.date}<br>${h.correct}/${h.total}問（正答率 ${h.rate}%）</div>`).join(""):"<p>まだ学習履歴がありません。</p>";
+  show("history");hide("home");hide("quiz");hide("result");hide("mistakes");hide("search");
+}
+function clearHistory(){
+  if(confirm("学習履歴を消去しますか？")){const s=stats();s.history=[];localStorage.setItem("seihoStats",JSON.stringify(s));showHistory()}
+}
+function showSearch(){
+  show("search");hide("home");hide("quiz");hide("result");hide("mistakes");hide("history");
+  document.getElementById("searchBox").value="";document.getElementById("searchResults").innerHTML="<p>問題文・分野・選択肢などを入力してください。</p>";
+}
+function searchQuestions(){
+  const term=document.getElementById("searchBox").value.trim().toLowerCase(),box=document.getElementById("searchResults");
+  if(!term){box.innerHTML="<p>キーワードを入力してください。</p>";return}
+  const hits=questions.filter(q=>(q.q+" "+q.cat+" "+q.c.join(" ")).toLowerCase().includes(term));
+  box.innerHTML=hits.length?hits.map((q,i)=>`<div class="review-item"><b>${i+1}. [${q.cat}] ${q.q}</b><br>正解：${String.fromCharCode(65+q.a)}．${q.c[q.a]}<br><small>${q.e}</small></div>`).join(""):`<p>該当する問題がありません。</p>`;
+}
+function show(id){document.getElementById(id).classList.remove("hidden")}
+function hide(id){document.getElementById(id).classList.add("hidden")}
+function goHome(){stopTimer();hide("quiz");hide("exam");hide("result");hide("mistakes");hide("history");hide("search");show("home");loadStats()}
+loadStats();
+</script>
+</body>
+</html>
